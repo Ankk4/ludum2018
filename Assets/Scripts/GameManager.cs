@@ -22,6 +22,8 @@ public class GameManager : MonoBehaviour {
 
     private float turnTimer;
 
+    public Rigidbody ghost_rb;
+
     public enum GameState
     {
         menu,
@@ -53,6 +55,8 @@ public class GameManager : MonoBehaviour {
         this.currentSimPoint = 0;
         this.currentGameState = GameState.action;
         this.turnText.text = "Action Turn";
+        player_rb.isKinematic = true;
+        player_rb.GetComponent<Collider>().enabled = false;
     }
 
     void Update()
@@ -128,14 +132,14 @@ public class GameManager : MonoBehaviour {
         Move();
 
         // record
-        positionRecord[recordIterator] = player_rb.position;
+        positionRecord[recordIterator] = ghost_rb.position;
         recordIterator++;
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (canJump)
             {
-                player_rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
+                ghost_rb.AddForce(new Vector3(0, jumpForce, 0), ForceMode.Impulse);
             }
         }
 
@@ -150,9 +154,9 @@ public class GameManager : MonoBehaviour {
     private void Move()
     {
         // Can jump?
-        float rayDistance = player_rb.GetComponent<Collider>().bounds.extents.y + 0.1f;
+        float rayDistance = ghost_rb.GetComponent<Collider>().bounds.extents.y + 0.1f;
         Ray ray = new Ray();
-        ray.origin = player_rb.GetComponent<Collider>().bounds.center;
+        ray.origin = ghost_rb.GetComponent<Collider>().bounds.center;
         ray.direction = Vector3.down;
 
         if (Physics.Raycast(ray, rayDistance))
@@ -170,7 +174,7 @@ public class GameManager : MonoBehaviour {
             float moveHorizontal = Input.GetAxis("Horizontal");
             float moveVertical = Input.GetAxis("Vertical");
             Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-            player_rb.velocity = new Vector3(movement.x * speed, player_rb.velocity.y, movement.z * speed);
+            ghost_rb.velocity = new Vector3(movement.x * speed, player_rb.velocity.y, movement.z * speed);
         }
         else
         {
@@ -180,8 +184,11 @@ public class GameManager : MonoBehaviour {
 
     private void ActionTurnEnd()
     {
-        momentum = player_rb.velocity;
-        player_rb.isKinematic = true;
+        momentum = ghost_rb.velocity;
+        player_rb.isKinematic = false;
+        player_rb.GetComponent<Collider>().enabled = true;
+        ghost_rb.isKinematic = true;
+        ghost_rb.GetComponent<Collider>().enabled = false;
 
         currentGameState = GameState.pause;
         turnText.text = "Pause Turn";
@@ -191,8 +198,11 @@ public class GameManager : MonoBehaviour {
     private void ActionTurnStart()
     {
         turnText.text = "Action Turn";
-        player_rb.velocity = momentum;
-        player_rb.isKinematic = false;
+        ghost_rb.velocity = momentum;        
+        ghost_rb.isKinematic = false;
+        ghost_rb.GetComponent<Collider>().enabled = true;
+        player_rb.isKinematic = true;
+        player_rb.GetComponent<Collider>().enabled = false;
         recordIterator = 0;
         currentSimPoint = 0;
     }
