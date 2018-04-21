@@ -299,6 +299,16 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 358a309026c682449a2982b8fbb10d2f, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &554105790 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1750879524554758, guid: 1f5c49e3577ec144881897a6b1b13ef4,
+    type: 2}
+  m_PrefabInternal: {fileID: 1202493830}
+--- !u!54 &554105791 stripped
+Rigidbody:
+  m_PrefabParentObject: {fileID: 54729492814131864, guid: 1f5c49e3577ec144881897a6b1b13ef4,
+    type: 2}
+  m_PrefabInternal: {fileID: 1202493830}
 --- !u!1 &592455937
 GameObject:
   m_ObjectHideFlags: 0
@@ -366,7 +376,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!114 &988031114 stripped
 MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114964962276352834, guid: 358a309026c682449a2982b8fbb10d2f,
+  m_PrefabParentObject: {fileID: 114622596866484994, guid: 358a309026c682449a2982b8fbb10d2f,
     type: 2}
   m_PrefabInternal: {fileID: 327567636}
   m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
@@ -419,6 +429,51 @@ Prefab:
       propertyPath: m_Drag
       value: 0.4
       objectReference: {fileID: 0}
+    - target: {fileID: 114797102643477314, guid: 1f5c49e3577ec144881897a6b1b13ef4,
+        type: 2}
+      propertyPath: m_turnText
+      value: 
+      objectReference: {fileID: 1551404801}
+    - target: {fileID: 114797102643477314, guid: 1f5c49e3577ec144881897a6b1b13ef4,
+        type: 2}
+      propertyPath: m_inputText
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 114797102643477314, guid: 1f5c49e3577ec144881897a6b1b13ef4,
+        type: 2}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 554105790}
+    - target: {fileID: 114797102643477314, guid: 1f5c49e3577ec144881897a6b1b13ef4,
+        type: 2}
+      propertyPath: speed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114797102643477314, guid: 1f5c49e3577ec144881897a6b1b13ef4,
+        type: 2}
+      propertyPath: jumpForce
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 114797102643477314, guid: 1f5c49e3577ec144881897a6b1b13ef4,
+        type: 2}
+      propertyPath: turnTime
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114797102643477314, guid: 1f5c49e3577ec144881897a6b1b13ef4,
+        type: 2}
+      propertyPath: turnTimeText
+      value: 
+      objectReference: {fileID: 988031114}
+    - target: {fileID: 114797102643477314, guid: 1f5c49e3577ec144881897a6b1b13ef4,
+        type: 2}
+      propertyPath: turnText
+      value: 
+      objectReference: {fileID: 1551404801}
+    - target: {fileID: 114797102643477314, guid: 1f5c49e3577ec144881897a6b1b13ef4,
+        type: 2}
+      propertyPath: rb
+      value: 
+      objectReference: {fileID: 554105791}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1f5c49e3577ec144881897a6b1b13ef4, type: 2}
   m_IsPrefabParent: 0
@@ -503,6 +558,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 19.951, y: 22.779001, z: 1.2320001}
+--- !u!114 &1551404801 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114964962276352834, guid: 358a309026c682449a2982b8fbb10d2f,
+    type: 2}
+  m_PrefabInternal: {fileID: 327567636}
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!1 &1906331355
 GameObject:
   m_ObjectHideFlags: 0
