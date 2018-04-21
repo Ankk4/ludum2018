@@ -47,11 +47,10 @@ public class Player : MonoBehaviour {
     private int recordIterator;
 
     //private IDictionary<, int> dict = new Dictionary<string, int>();
-    //private Vector3[] velocityRecords;
-    private ArrayList positionRecord;
+    private Vector3[] positionRecord;
+    //private ArrayList positionRecord;
 
     private Vector3 startP, endP;
-    private float simulationPointDistance;
     private int currentSimPoint;
 
     // Use this for initialization
@@ -62,7 +61,7 @@ public class Player : MonoBehaviour {
         this.startinRotation = this.rb.rotation;
         this.canJump = true;
         //this.velocityRecords = new Vector3[1000];
-        this.positionRecord = new ArrayList();
+        this.positionRecord = new Vector3[1000];
         this.recordIterator = 0;
         this.currentSimPoint = 0;
         this.currentGameState = GameState.action;
@@ -81,8 +80,8 @@ public class Player : MonoBehaviour {
             else if (currentGameState == GameState.pause)
             {
                 currentGameState = GameState.simulation;
-                startP = (Vector3)positionRecord[0];
-                endP = (Vector3)positionRecord[1];
+                startP = positionRecord[0];
+                endP = positionRecord[1];
                 turnText.text = "Simulation Turn";
                 ResetForSimulation();
             }
@@ -108,7 +107,7 @@ public class Player : MonoBehaviour {
         else if (currentGameState == GameState.simulation)
         {
             rb.position = Vector3.Lerp(startP, endP, Time.deltaTime);
-            if (currentSimPoint + 1 < positionRecord.Count - 1)
+            if (currentSimPoint + 1 < positionRecord.Length - 1)
             {
                 currentSimPoint++;
                 SetNextSimulationPoint(currentSimPoint);
@@ -118,14 +117,15 @@ public class Player : MonoBehaviour {
 
     private void HandleActionTurn()
     {
+        
         Move();
         
         // record
         if (turnActive)
         {
-            //velocityRecords[recordIterator] = rb.velocity;
-            //recordIterator++;
-            positionRecord.Add(rb.position);
+            positionRecord[recordIterator] = rb.position;
+            recordIterator++;
+            //positionRecord.Add(rb.position);
         }
 
         // Bounding
@@ -218,6 +218,8 @@ public class Player : MonoBehaviour {
         rb.position = new Vector3(0f, 2.7f, -7f);
         rb.velocity = Vector3.zero;
         rb.rotation = startinRotation;
+        currentGameState = GameState.action;
+        positionRecord = new Vector3[1000];
     }
 
     private void ResetForSimulation()
@@ -235,7 +237,6 @@ public class Player : MonoBehaviour {
     {
         startP = (Vector3) positionRecord[currentPoint];
         endP = (Vector3) positionRecord[currentPoint + 1];
-        simulationPointDistance = Vector3.Distance(startP, endP);
     }
 
     
@@ -250,5 +251,6 @@ public class Player : MonoBehaviour {
             transform.parent = null;
         }
     }
+
     
 }
