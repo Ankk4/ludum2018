@@ -25,7 +25,7 @@ GameObject:
   - component: {fileID: 54729492814131864}
   - component: {fileID: 65002412713335422}
   m_Layer: 0
-  m_Name: Player
+  m_Name: PlayerGhost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -58,7 +58,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 60f53e183ab398445b8f134904a76e5a, type: 2}
+  - {fileID: 2100000, guid: 33fb29b7fbc59b440a58a960b00f35ac, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
