@@ -21,7 +21,6 @@ GameObject:
   - component: {fileID: 4563090832468750}
   - component: {fileID: 33282435327418302}
   - component: {fileID: 23497634822080696}
-  - component: {fileID: 114689735664470564}
   - component: {fileID: 114797102643477314}
   - component: {fileID: 54729492814131864}
   - component: {fileID: 65002412713335422}
@@ -39,7 +38,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1750879524554758}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.7, z: -11}
+  m_LocalPosition: {x: 0, y: 2.7, z: -11.24}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -113,20 +112,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &114689735664470564
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1750879524554758}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -619905303, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 0}
-  m_sendNavigationEvents: 1
-  m_DragThreshold: 5
 --- !u!114 &114797102643477314
 MonoBehaviour:
   m_ObjectHideFlags: 1

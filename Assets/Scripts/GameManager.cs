@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour {
     private Vector3 startP, endP;
     private int currentSimPoint;
     private bool simulationOver;
+    private float journeyLength;
 
     void Start()
     {
@@ -50,6 +51,7 @@ public class GameManager : MonoBehaviour {
         this.recordIterator = 0;
         this.currentSimPoint = 0;
         this.currentGameState = GameState.action;
+        this.turnText.text = "Action Turn";
     }
 
     void Update()
@@ -59,8 +61,8 @@ public class GameManager : MonoBehaviour {
             currentGameState = GameState.simulation;
             startP = positionRecord[0];
             endP = positionRecord[1];
+            journeyLength = Vector3.Distance(startP, endP);
             turnText.text = "Simulation Turn";
-            simulationOver = false;
             ResetForSimulation();
         }
         else if (Input.GetKeyDown(KeyCode.Z) && currentGameState == GameState.simulation && simulationOver)
@@ -83,7 +85,6 @@ public class GameManager : MonoBehaviour {
         }
         else if (currentGameState == GameState.pause)
         {
-            turnText.text = "Pause Turn";
         }
         else if (currentGameState == GameState.simulation)
         {
@@ -93,16 +94,30 @@ public class GameManager : MonoBehaviour {
 
     private void HandleSimulationTurn()
     {
-        player_rb.position = Vector3.Lerp(startP, endP, Time.deltaTime);
-        if (currentSimPoint + 1 < positionRecord.Length - 1)
+        // SIMULATION OVER?
+        if (currentSimPoint == recordIterator)
         {
-            currentSimPoint++;
-            SetNextSimulationPoint(currentSimPoint);
-            if (currentSimPoint == recordIterator)
+            player_rb.isKinematic = true;
+            simulationOver = true;
+        }
+        else
+        {
+            float distCovered = (Time.time - turnTime) * speed;
+            float fracJourney = distCovered / journeyLength;
+            player_rb.position = Vector3.Lerp(startP, endP, Time.deltaTime);
+
+            // DO WE NEED NEW END POS?
+            if (fracJourney >= 1f)
             {
-                player_rb.isKinematic = true;
-                simulationOver = true;
+                currentSimPoint++;
+                startP = positionRecord[currentSimPoint];
+                endP = positionRecord[currentSimPoint + 1];
+                journeyLength = Vector3.Distance(startP, endP);
+                currentSimPoint++;
             }
+
+            turnTimer -= Time.deltaTime;
+            turnTimeText.text = turnTimer.ToString("F2");
         }
     }
 
@@ -165,15 +180,15 @@ public class GameManager : MonoBehaviour {
     {
         momentum = player_rb.velocity;
         player_rb.isKinematic = true;
-        turnTimeText.text = "00:00";
+
         currentGameState = GameState.pause;
         turnText.text = "Pause Turn";
+        turnTimeText.text = "00:00";
     }
 
     private void ActionTurnStart()
     {
         turnText.text = "Action Turn";
-        turnTimeText.text = "00:00";
         player_rb.velocity = momentum;
         player_rb.isKinematic = false;
         turnTimer = turnTime;
@@ -202,17 +217,11 @@ public class GameManager : MonoBehaviour {
     private void ResetForSimulation()
     {
         player_rb.isKinematic = false;
+        simulationOver = false;
         turnTimer = turnTime;
-        turnTimeText.text = turnTimer.ToString("F2");
 
         player_rb.velocity = Vector3.zero;
         player_rb.rotation = startinRotation;
-    }
-
-    private void SetNextSimulationPoint(int currentPoint)
-    {
-        startP = positionRecord[currentPoint];
-        endP = positionRecord[currentPoint + 1];
     }
 
     void OnCollisionEnter(Collision collision)
