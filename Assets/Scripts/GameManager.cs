@@ -27,7 +27,8 @@ public class GameManager : MonoBehaviour {
         menu,
         action,
         pause,
-        simulation
+        simulation,
+        readyForAction
     }
     private GameState currentGameState;
 
@@ -65,7 +66,7 @@ public class GameManager : MonoBehaviour {
             turnText.text = "Simulation Turn";
             ResetForSimulation();
         }
-        else if (Input.GetKeyDown(KeyCode.Z) && currentGameState == GameState.simulation && simulationOver)
+        else if (Input.GetKeyDown(KeyCode.Z) && currentGameState == GameState.readyForAction && simulationOver)
         {
             currentGameState = GameState.action;
             ActionTurnStart();
@@ -98,6 +99,8 @@ public class GameManager : MonoBehaviour {
         if (currentSimPoint == recordIterator)
         {
             player_rb.isKinematic = true;
+            currentGameState = GameState.readyForAction;
+            ReadyActionTurnStart();
             simulationOver = true;
         }
         else
@@ -109,7 +112,6 @@ public class GameManager : MonoBehaviour {
             // DO WE NEED NEW END POS?
             if (fracJourney >= 1f)
             {
-                currentSimPoint++;
                 startP = positionRecord[currentSimPoint];
                 endP = positionRecord[currentSimPoint + 1];
                 journeyLength = Vector3.Distance(startP, endP);
@@ -191,9 +193,14 @@ public class GameManager : MonoBehaviour {
         turnText.text = "Action Turn";
         player_rb.velocity = momentum;
         player_rb.isKinematic = false;
-        turnTimer = turnTime;
         recordIterator = 0;
         currentSimPoint = 0;
+    }
+
+    private void ReadyActionTurnStart() {
+        turnText.text = "Press z to start action turn";
+        turnTimeText.text = "00.00";
+        turnTimer = turnTime;
     }
 
     private void DebugReset()
@@ -224,20 +231,5 @@ public class GameManager : MonoBehaviour {
         player_rb.rotation = startinRotation;
     }
 
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.collider.gameObject.tag == "ground")
-        {
-            transform.parent = collision.collider.transform;
-        }
-    }
-
-    void OnCollisionExit(Collision collision)
-    {
-        if (collision.collider.gameObject.tag == "ground")
-        {
-            transform.parent = null;
-        }
-    }
 
 }
