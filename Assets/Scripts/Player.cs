@@ -139,4 +139,18 @@ public class Player : MonoBehaviour {
         m_rb.velocity = Vector3.zero;
         m_rb.rotation = startinRotation;
     }
+
+    
+    void OnCollisionEnter(Collision collision) {
+        if(collision.collider.gameObject.tag == "ground") {
+            Debug.Log("Bob");
+            transform.parent = collision.collider.transform;
+        }
+    }
+    void OnCollisionExit(Collision collision) {
+        if(collision.collider.gameObject.tag == "ground") {
+            transform.parent = null;
+        }
+    }
+    
 }
