@@ -29,6 +29,7 @@ public class Player : MonoBehaviour {
     private bool m_turnActive;
     private Quaternion startinRotation;
     private bool m_canJump; 
+    private Vector3 momentum;
 
     // Use this for initialization
     void Start ()
@@ -114,6 +115,7 @@ public class Player : MonoBehaviour {
 
     void TurnEnd()
     {
+        momentum = m_rb.velocity;
         m_rb.isKinematic = true;
         m_turnActive = false;
         m_turnTimeText.text = "00:00";
@@ -121,6 +123,7 @@ public class Player : MonoBehaviour {
 
     void TurnStart()
     {
+        m_rb.velocity = momentum;
         m_rb.isKinematic = false;
         m_turnActive = true;
         m_turnTimer = m_turnTime;
