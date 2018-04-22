@@ -726,6 +726,16 @@ Prefab:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114890725585756586, guid: 358a309026c682449a2982b8fbb10d2f,
+        type: 2}
+      propertyPath: m_Text
+      value: More Time
+      objectReference: {fileID: 0}
+    - target: {fileID: 114268642492508482, guid: 358a309026c682449a2982b8fbb10d2f,
+        type: 2}
+      propertyPath: m_Text
+      value: Speed Up
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 358a309026c682449a2982b8fbb10d2f, type: 2}
   m_IsPrefabParent: 0
