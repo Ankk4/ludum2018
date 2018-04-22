@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour {
     private Vector3 startingPoint;
     [SerializeField]
     private GameObject pauseMenu;
+    private Toggle toggle;
 
     private float turnTimer;
 
@@ -61,6 +62,8 @@ public class GameManager : MonoBehaviour {
         this.turnText.text = "Action Turn";
         player_rb.isKinematic = true;
         player_rb.GetComponent<Collider>().enabled = false;
+        toggle = pauseMenu.transform.Find("SpeedUp").gameObject.GetComponent<Toggle>();
+        toggle.isOn = false;
     }
 
     void Update()
@@ -172,6 +175,8 @@ public class GameManager : MonoBehaviour {
             currentGameState = GameState.pause;
             turnText.text = "Pause Turn";
             turnTimeText.text = "00:00";
+
+            toggle.isOn = false;
         }
     }
 
@@ -222,7 +227,7 @@ public class GameManager : MonoBehaviour {
         currentSimPoint = 0;
     }
 
-    private void HandlePauseTurn() {
+    private void HandlePauseTurn() {       
         pauseMenu.SetActive(true);
     }
 
@@ -246,6 +251,8 @@ public class GameManager : MonoBehaviour {
         ghost_rb.rotation = player_rb.rotation;
         ghost_rb.isKinematic = false;
         ghost_rb.GetComponent<Collider>().enabled = true;
+
+        toggle.isOn = false;
 
         // Reset recording
         velocityRecord = new Vector3[1000];
@@ -274,9 +281,21 @@ public class GameManager : MonoBehaviour {
         ghost_rb.isKinematic = false;
         ghost_rb.GetComponent<Collider>().enabled = true;
 
+        toggle.isOn = false;
+
         // Reset recording
         velocityRecord = new Vector3[1000];
         currentSimPoint = 0;
         recordIterator = 0;
+    }
+
+    public void SpeedUpgrade() {
+        toggle = pauseMenu.transform.Find("SpeedUp").gameObject.GetComponent<Toggle>();
+        bool isOn = toggle.isOn;
+        if(isOn) {
+            speed = 10;
+        } else if (!isOn) {
+            speed = 6;
+        }
     }
 }

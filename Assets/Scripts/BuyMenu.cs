@@ -14,12 +14,7 @@ public class BuyMenu : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        GameManager.GameState gs = gm.GetComponent<GameManager>().CurrentGameState;
-        Debug.Log(gs);
-        if(gs == GameManager.GameState.action) {
-            buyMenu.SetActive(true);
-        } else {
-            buyMenu.SetActive(false);
-        }
+
     }
+
 }
