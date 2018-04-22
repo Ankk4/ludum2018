@@ -54,7 +54,9 @@ MonoBehaviour:
   turnTimeText: {fileID: 0}
   turnText: {fileID: 0}
   player_rb: {fileID: 0}
-  speed: 6
+  ghost_rb: {fileID: 0}
+  playerCam: {fileID: 0}
+  speed: 7
   jumpForce: 6
-  turnTime: 5
+  turnTime: 10
   startingPoint: {x: 0, y: 2.7, z: -11}

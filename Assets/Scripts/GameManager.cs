@@ -10,7 +10,9 @@ public class GameManager : MonoBehaviour {
     [SerializeField]
     private Text turnText;
     [SerializeField]
-    private Rigidbody player_rb;
+    public Rigidbody player_rb;
+    [SerializeField]
+    public Rigidbody ghost_rb;
     [SerializeField]
     private float speed;
     [SerializeField]
@@ -22,8 +24,6 @@ public class GameManager : MonoBehaviour {
 
     private float turnTimer;
 
-    public Rigidbody ghost_rb;
-
     public enum GameState
     {
         menu,
@@ -33,6 +33,10 @@ public class GameManager : MonoBehaviour {
         readyForAction
     }
     private GameState currentGameState;
+    public GameState CurrentGameState
+    {
+        get { return currentGameState; }
+    }
 
     private Quaternion startingRotation;
     private Vector3 momentum;
@@ -44,6 +48,7 @@ public class GameManager : MonoBehaviour {
 
     void Start()
     {
+        this.turnTime = 5.0f;
         this.turnTimer = turnTime;
         this.startingRotation = this.player_rb.rotation;
         this.canJump = true;
@@ -58,7 +63,7 @@ public class GameManager : MonoBehaviour {
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Z))
+        if (Input.GetButton("Advance"))
         {
             switch (currentGameState)
             {
@@ -69,6 +74,8 @@ public class GameManager : MonoBehaviour {
                     // Activate player model for simulation. 
                     player_rb.isKinematic = false;
                     player_rb.GetComponent<Collider>().enabled = true;
+                    ghost_rb.isKinematic = true;
+                    ghost_rb.GetComponent<Collider>().enabled = false;
                     turnTimer = turnTime;
                     break;
 
@@ -79,7 +86,7 @@ public class GameManager : MonoBehaviour {
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetButton("Reset"))
         {
             DebugReset();
         }
@@ -109,6 +116,10 @@ public class GameManager : MonoBehaviour {
 
     private void HandleSimulationTurn()
     {
+        // Update turn timer
+        turnTimer -= Time.deltaTime;
+        turnTimeText.text = turnTimer.ToString("F2");
+
         player_rb.velocity = velocityRecord[currentSimPoint];
         currentSimPoint++;
 
@@ -128,7 +139,7 @@ public class GameManager : MonoBehaviour {
     {
         // Player input
         Move();
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetButton("Jump"))
         {
             if (canJump)
             {
@@ -188,7 +199,7 @@ public class GameManager : MonoBehaviour {
         }
         else
         {
-            player_rb.velocity = new Vector3(player_rb.velocity.x, player_rb.velocity.y, player_rb.velocity.z);
+            ghost_rb.velocity = new Vector3(ghost_rb.velocity.x, ghost_rb.velocity.y, ghost_rb.velocity.z);
         }
     }
 
@@ -212,20 +223,53 @@ public class GameManager : MonoBehaviour {
     {
         // Reset Game
         currentGameState = GameState.action;
+        this.turnText.text = "Action Turn";
         turnTimer = turnTime;
 
         // Reset movement
         canJump = true;
-        player_rb.isKinematic = false;
         player_rb.position = startingPoint;
-        player_rb.velocity = Vector3.zero;
         player_rb.rotation = startingRotation;
+        player_rb.velocity = Vector3.zero;
+        player_rb.isKinematic = true;
+        player_rb.GetComponent<Collider>().enabled = false;
+
         ghost_rb.position = player_rb.position;
-        ghost_rb.velocity = player_rb.velocity;
+        ghost_rb.velocity = Vector3.zero;
         ghost_rb.rotation = player_rb.rotation;
+        ghost_rb.isKinematic = false;
+        ghost_rb.GetComponent<Collider>().enabled = true;
 
         // Reset recording
         velocityRecord = new Vector3[1000];
         currentSimPoint = 0;
+        recordIterator = 0;
+    }
+
+    public void Reset()
+    {
+        // Reset Game
+        currentGameState = GameState.action;
+        this.turnText.text = "Action Turn";
+        turnTimer = turnTime;
+
+        // Reset movement
+        canJump = true;
+        player_rb.position = startingPoint;
+        player_rb.rotation = startingRotation;
+        player_rb.velocity = Vector3.zero;
+        player_rb.isKinematic = true;
+        player_rb.GetComponent<Collider>().enabled = false;
+
+        ghost_rb.position = player_rb.position;
+        ghost_rb.velocity = Vector3.zero;
+        ghost_rb.rotation = player_rb.rotation;
+        ghost_rb.isKinematic = false;
+        ghost_rb.GetComponent<Collider>().enabled = true;
+
+        // Reset recording
+        velocityRecord = new Vector3[1000];
+        currentSimPoint = 0;
+        recordIterator = 0;
     }
 }

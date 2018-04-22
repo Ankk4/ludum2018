@@ -26,7 +26,7 @@ GameObject:
   - component: {fileID: 65002412713335422}
   m_Layer: 0
   m_Name: PlayerGhost
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -123,3 +123,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 444e35eb3b75d214b8f8dc78086d8d16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 0}
