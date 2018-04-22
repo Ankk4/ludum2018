@@ -34,23 +34,20 @@ public class GameManager : MonoBehaviour {
     }
     private GameState currentGameState;
 
-    private Quaternion startinRotation;
+    private Quaternion startingRotation;
     private Vector3 momentum;
     private bool canJump;
 
     private int recordIterator;
-    private Vector3[] positionRecord;
-    private Vector3 startP, endP;
     private int currentSimPoint;
-    private bool simulationOver;
-    private float journeyLength;
+    private Vector3[] velocityRecord;
 
     void Start()
     {
         this.turnTimer = turnTime;
-        this.startinRotation = this.player_rb.rotation;
+        this.startingRotation = this.player_rb.rotation;
         this.canJump = true;
-        this.positionRecord = new Vector3[1000];
+        this.velocityRecord = new Vector3[1000];
         this.recordIterator = 0;
         this.currentSimPoint = 0;
         this.currentGameState = GameState.action;
@@ -61,19 +58,25 @@ public class GameManager : MonoBehaviour {
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Z) && currentGameState == GameState.pause)
+        if (Input.GetKeyDown(KeyCode.Z))
         {
-            currentGameState = GameState.simulation;
-            startP = positionRecord[0];
-            endP = positionRecord[1];
-            journeyLength = Vector3.Distance(startP, endP);
-            turnText.text = "Simulation Turn";
-            ResetForSimulation();
-        }
-        else if (Input.GetKeyDown(KeyCode.Z) && currentGameState == GameState.readyForAction && simulationOver)
-        {
-            currentGameState = GameState.action;
-            ActionTurnStart();
+            switch (currentGameState)
+            {
+                case GameState.pause:
+                    currentGameState = GameState.simulation;
+                    turnText.text = "Simulation Turn";
+
+                    // Activate player model for simulation. 
+                    player_rb.isKinematic = false;
+                    player_rb.GetComponent<Collider>().enabled = true;
+                    turnTimer = turnTime;
+                    break;
+
+                case GameState.readyForAction:
+                    currentGameState = GameState.action;
+                    ActionTurnStart();
+                    break;
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.R))
@@ -84,57 +87,47 @@ public class GameManager : MonoBehaviour {
 
     void FixedUpdate()
     {
-        if (currentGameState == GameState.action)
+        switch (currentGameState)
         {
-            HandleActionTurn();
-        }
-        else if (currentGameState == GameState.pause)
-        {
-        }
-        else if (currentGameState == GameState.simulation)
-        {
-            HandleSimulationTurn();
+            case GameState.action:
+                HandleActionTurn();
+                break;
+
+            case GameState.pause:
+                // do some pausy things
+                break;
+
+            case GameState.simulation:
+                HandleSimulationTurn();
+                break;
+
+            case GameState.readyForAction:
+                // do some readyforactiony things
+                break;
         }
     }
 
     private void HandleSimulationTurn()
     {
-        // SIMULATION OVER?
+        player_rb.velocity = velocityRecord[currentSimPoint];
+        currentSimPoint++;
+
+        // Check if Simulation is done
         if (currentSimPoint == recordIterator)
         {
             player_rb.isKinematic = true;
             currentGameState = GameState.readyForAction;
-            ReadyActionTurnStart();
-            simulationOver = true;
-        }
-        else
-        {
-            float distCovered = (Time.time - turnTime) * speed;
-            float fracJourney = distCovered / journeyLength;
-            player_rb.position = Vector3.Lerp(startP, endP, Time.deltaTime);
 
-            // DO WE NEED NEW END POS?
-            if (fracJourney >= 1f)
-            {
-                startP = positionRecord[currentSimPoint];
-                endP = positionRecord[currentSimPoint + 1];
-                journeyLength = Vector3.Distance(startP, endP);
-                currentSimPoint++;
-            }
-
-            turnTimer -= Time.deltaTime;
-            turnTimeText.text = turnTimer.ToString("F2");
+            turnText.text = "Press z to start action turn";
+            turnTimeText.text = "00.00";
+            turnTimer = turnTime;
         }
     }
 
     private void HandleActionTurn()
     {
+        // Player input
         Move();
-
-        // record
-        positionRecord[recordIterator] = ghost_rb.position;
-        recordIterator++;
-
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (canJump)
@@ -143,11 +136,28 @@ public class GameManager : MonoBehaviour {
             }
         }
 
+        // Record velocity EVERY FRAME!!
+        velocityRecord[recordIterator] = ghost_rb.velocity;
+        recordIterator++;
+
+        // Update turn timer
         turnTimer -= Time.deltaTime;
         turnTimeText.text = turnTimer.ToString("F2");
+
+        // Turn timer ran out --> Action Turn over. 
         if (turnTimer < 0)
         {
-            ActionTurnEnd();
+            // Set everything to be kinematic and no collide.
+            momentum = ghost_rb.velocity;
+            player_rb.isKinematic = true;
+            player_rb.GetComponent<Collider>().enabled = true;
+
+            ghost_rb.isKinematic = true;
+            ghost_rb.GetComponent<Collider>().enabled = true;
+
+            currentGameState = GameState.pause;
+            turnText.text = "Pause Turn";
+            turnTimeText.text = "00:00";
         }
     }
 
@@ -182,64 +192,40 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    private void ActionTurnEnd()
-    {
-        momentum = ghost_rb.velocity;
-        player_rb.isKinematic = false;
-        player_rb.GetComponent<Collider>().enabled = true;
-        ghost_rb.isKinematic = true;
-        ghost_rb.GetComponent<Collider>().enabled = false;
-
-        currentGameState = GameState.pause;
-        turnText.text = "Pause Turn";
-        turnTimeText.text = "00:00";
-    }
-
     private void ActionTurnStart()
     {
+        // Set ghost to player position and unlock movement. 
         turnText.text = "Action Turn";
-        ghost_rb.velocity = momentum;        
+        ghost_rb.velocity = momentum;
+        ghost_rb.position = player_rb.position;
         ghost_rb.isKinematic = false;
         ghost_rb.GetComponent<Collider>().enabled = true;
+
+        // Set player to stay put 
         player_rb.isKinematic = true;
         player_rb.GetComponent<Collider>().enabled = false;
         recordIterator = 0;
         currentSimPoint = 0;
     }
 
-    private void ReadyActionTurnStart() {
-        turnText.text = "Press z to start action turn";
-        turnTimeText.text = "00.00";
-        turnTimer = turnTime;
-    }
-
     private void DebugReset()
     {
-        player_rb.velocity = momentum;
-        player_rb.isKinematic = false;
+        // Reset Game
+        currentGameState = GameState.action;
         turnTimer = turnTime;
 
+        // Reset movement
+        canJump = true;
+        player_rb.isKinematic = false;
         player_rb.position = startingPoint;
         player_rb.velocity = Vector3.zero;
-        player_rb.rotation = startinRotation;
+        player_rb.rotation = startingRotation;
+        ghost_rb.position = player_rb.position;
+        ghost_rb.velocity = player_rb.velocity;
+        ghost_rb.rotation = player_rb.rotation;
 
-        turnTimer = turnTime;
-        startinRotation = this.player_rb.rotation;
-        canJump = true;
-        positionRecord = new Vector3[1000];
+        // Reset recording
+        velocityRecord = new Vector3[1000];
         currentSimPoint = 0;
-        currentGameState = GameState.action;
     }
-
-    private void ResetForSimulation()
-    {
-        player_rb.isKinematic = false;
-        simulationOver = false;
-        turnTimer = turnTime;
-
-        player_rb.velocity = Vector3.zero;
-        player_rb.rotation = startinRotation;
-    }
-
-
 }
