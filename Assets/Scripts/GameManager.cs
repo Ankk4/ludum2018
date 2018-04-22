@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour {
     private float turnTime;
     [SerializeField]
     private Vector3 startingPoint;
+    [SerializeField]
+    private GameObject pauseMenu;
 
     private float turnTimer;
 
@@ -101,7 +103,7 @@ public class GameManager : MonoBehaviour {
                 break;
 
             case GameState.pause:
-                // do some pausy things
+                HandlePauseTurn();
                 break;
 
             case GameState.simulation:
@@ -116,6 +118,7 @@ public class GameManager : MonoBehaviour {
 
     private void HandleSimulationTurn()
     {
+        pauseMenu.SetActive(false);
         // Update turn timer
         turnTimer -= Time.deltaTime;
         turnTimeText.text = turnTimer.ToString("F2");
@@ -217,6 +220,10 @@ public class GameManager : MonoBehaviour {
         player_rb.GetComponent<Collider>().enabled = false;
         recordIterator = 0;
         currentSimPoint = 0;
+    }
+
+    private void HandlePauseTurn() {
+        pauseMenu.SetActive(true);
     }
 
     private void DebugReset()

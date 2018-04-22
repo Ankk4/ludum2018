@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     {
         if(collision.collider.gameObject.tag == "MovingPlatform")
         {
+            Debug.Log("nigga");
             transform.parent = collision.collider.transform;
         }
     }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovingPlatform : MonoBehaviour {
+public class MovingPlatformAction : MonoBehaviour {
 
     public float position;
     public float positionCounter = 0.1f;
@@ -17,12 +17,13 @@ public class MovingPlatform : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
+        GameManager.GameState gs = gm.GetComponent<GameManager>().CurrentGameState;
+        if(gs == GameManager.GameState.action) {
             position = Mathf.Sin(positionCounter) / 10;
             Vector3 newPosition = new Vector3(position,0,0);
             transform.position += newPosition;
-            positionCounter += positionIncrement;
-        
+            positionCounter -= positionIncrement;
+        }
 		
         
         //transform.Translate(Vector3.forward * speed * direction * Time.deltaTime);
