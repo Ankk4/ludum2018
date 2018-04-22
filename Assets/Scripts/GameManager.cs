@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using System.Linq;
 
 public class GameManager : MonoBehaviour {
 
@@ -24,6 +25,9 @@ public class GameManager : MonoBehaviour {
     [SerializeField]
     private GameObject pauseMenu;
     private Toggle toggle;
+    public ToggleGroup upgrades;
+
+    private float lastActionTime;
 
     private float turnTimer;
 
@@ -52,6 +56,7 @@ public class GameManager : MonoBehaviour {
     void Start()
     {
         this.turnTime = 5.0f;
+        lastActionTime = 5.0f;
         this.turnTimer = turnTime;
         this.startingRotation = this.player_rb.rotation;
         this.canJump = true;
@@ -62,8 +67,8 @@ public class GameManager : MonoBehaviour {
         this.turnText.text = "Action Turn";
         player_rb.isKinematic = true;
         player_rb.GetComponent<Collider>().enabled = false;
-        toggle = pauseMenu.transform.Find("SpeedUp").gameObject.GetComponent<Toggle>();
-        toggle.isOn = false;
+        //toggle = pauseMenu.transform.Find("SpeedUp").gameObject.GetComponent<Toggle>();
+        //toggle.isOn = false;
     }
 
     void Update()
@@ -81,7 +86,7 @@ public class GameManager : MonoBehaviour {
                     player_rb.GetComponent<Collider>().enabled = true;
                     ghost_rb.isKinematic = true;
                     ghost_rb.GetComponent<Collider>().enabled = false;
-                    turnTimer = turnTime;
+                    turnTimer = lastActionTime;
                     break;
 
                 case GameState.readyForAction:
@@ -176,7 +181,7 @@ public class GameManager : MonoBehaviour {
             turnText.text = "Pause Turn";
             turnTimeText.text = "00:00";
 
-            toggle.isOn = false;
+            ResetUpgrades();
         }
     }
 
@@ -213,6 +218,7 @@ public class GameManager : MonoBehaviour {
 
     private void ActionTurnStart()
     {
+        lastActionTime = turnTime;
         // Set ghost to player position and unlock movement. 
         turnText.text = "Action Turn";
         ghost_rb.velocity = momentum;
@@ -252,12 +258,16 @@ public class GameManager : MonoBehaviour {
         ghost_rb.isKinematic = false;
         ghost_rb.GetComponent<Collider>().enabled = true;
 
-        toggle.isOn = false;
+        ResetUpgrades();
+        turnTime = 5.0f;
 
         // Reset recording
         velocityRecord = new Vector3[1000];
         currentSimPoint = 0;
         recordIterator = 0;
+
+        //hide pausemenu
+        pauseMenu.SetActive(false);
     }
 
     public void Reset()
@@ -281,21 +291,69 @@ public class GameManager : MonoBehaviour {
         ghost_rb.isKinematic = false;
         ghost_rb.GetComponent<Collider>().enabled = true;
 
-        toggle.isOn = false;
+        ResetUpgrades();
 
         // Reset recording
         velocityRecord = new Vector3[1000];
         currentSimPoint = 0;
         recordIterator = 0;
+
+        //hide pausemenu
+        pauseMenu.SetActive(false);
+    }
+
+    void ResetUpgrades() {
+        //toggle = upgrades.ActiveToggles().FirstOrDefault();
+        //toggle.isOn = false;
+        //upgrades.SetAllTogglesOff();
+        toggle = pauseMenu.transform.Find("SpeedUp").gameObject.GetComponent<Toggle>();
+        toggle.isOn = false;
+        toggle = pauseMenu.transform.Find("MoreTime").gameObject.GetComponent<Toggle>();
+        toggle.isOn = false;
     }
 
     public void SpeedUpgrade() {
-        toggle = pauseMenu.transform.Find("SpeedUp").gameObject.GetComponent<Toggle>();
-        bool isOn = toggle.isOn;
-        if(isOn) {
-            speed = 10;
-        } else if (!isOn) {
+        //toggle = pauseMenu.transform.Find("SpeedUp").gameObject.GetComponent<Toggle>();
+        toggle = upgrades.ActiveToggles().FirstOrDefault();
+        
+        if(toggle != null) {
+            Debug.Log(toggle.name);
+            //bool isOn = toggle.isOn;
+            if(toggle.name == "SpeedUp") {
+                speed = 10;
+            }
+        } else {
             speed = 6;
         }
     }
+
+    public void MoreTime() {
+        //toggle = pauseMenu.transform.Find("SpeedUp").gameObject.GetComponent<Toggle>();
+        toggle = upgrades.ActiveToggles().FirstOrDefault();
+
+        if(toggle != null) {
+            Debug.Log(toggle.name);
+            //bool isOn = toggle.isOn;
+            if(toggle.name == "MoreTime") {
+                    turnTime = 10;            
+            }
+        } else {
+            turnTime = 5;;
+        }
+    }
+
+    public void KillMomentum() {
+        toggle = upgrades.ActiveToggles().FirstOrDefault();
+
+        if(toggle != null) {
+            Debug.Log(toggle.name);
+            //bool isOn = toggle.isOn;
+            if(toggle.name == "KillMomentum") {
+                Debug.Log(momentum);
+                Debug.Log("wattafaj");
+                momentum = new Vector3(0,0,0);
+            }
+        }
+    }
+
 }

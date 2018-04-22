@@ -7,8 +7,6 @@ public class MovingPlatform : MonoBehaviour {
     public float position;
     public float positionCounter = 0.1f;
     public float positionIncrement = 0.01f;
-    public float speed = 1;
-    private int direction = 1;
     public GameObject gm;
     // Use this for initialization
     void Start () {
