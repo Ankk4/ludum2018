@@ -7,6 +7,7 @@ TagManager:
   - ground
   - MovingPlatform
   - ghost
+  - Goal
   layers:
   - Default
   - TransparentFX

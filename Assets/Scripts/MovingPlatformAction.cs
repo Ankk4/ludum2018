@@ -5,11 +5,16 @@ using UnityEngine;
 public class MovingPlatformAction : MonoBehaviour {
 
     public float position;
+
+    //X=0, Y=1, Z=2
+    public int axel;
+
     public float positionCounter = 0.1f;
     public float positionIncrement = 0.01f;
-    public float speed = 1;
-    //private int direction = 1;
     public GameObject gm;
+
+    private Vector3 newPosition;
+
     // Use this for initialization
     void Start () {
         
@@ -19,8 +24,23 @@ public class MovingPlatformAction : MonoBehaviour {
 	void Update () {
         GameManager.GameState gs = gm.GetComponent<GameManager>().CurrentGameState;
         if(gs == GameManager.GameState.action) {
-            position = Mathf.Sin(positionCounter) / 10;
-            Vector3 newPosition = new Vector3(position,0,0);
+            switch(axel) {
+                case 0:
+                    position = Mathf.Sin(positionCounter) / 10;
+                    newPosition = new Vector3(position,0,0);
+                    break;
+                case 1:
+                    position = Mathf.Sin(positionCounter) / 10;
+                    newPosition = new Vector3(0,position,0);
+                    break;
+                case 2:
+                    position = Mathf.Sin(positionCounter) / 10;
+                    newPosition = new Vector3(0,0,position);
+                    break;
+                default:
+                    break;
+            }
+            
             transform.position += newPosition;
             positionCounter -= positionIncrement;
         }

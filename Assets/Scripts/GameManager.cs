@@ -51,7 +51,7 @@ public class GameManager : MonoBehaviour {
     private int recordIterator;
     private int currentSimPoint;
     private Vector3[] velocityRecord;
-    private float upgradeVelocity;
+    private float upgradeVelocity, velocityModifier;
     private bool playerSolid, ghostSolid;
 
     void Start()
@@ -72,6 +72,7 @@ public class GameManager : MonoBehaviour {
         this.player_rb.GetComponent<Collider>().enabled = false;
         this.playerSolid = false;
         this.ghostSolid = false;
+        velocityModifier = 1;
         //toggle = pauseMenu.transform.Find("SpeedUp").gameObject.GetComponent<Toggle>();
         //toggle.isOn = false;
         //upgradeVelocity = 1;
@@ -137,7 +138,7 @@ public class GameManager : MonoBehaviour {
         turnTimer -= Time.deltaTime;
         turnTimeText.text = turnTimer.ToString("F2");
 
-        player_rb.velocity = velocityRecord[currentSimPoint] * upgradeVelocity;
+        player_rb.velocity = velocityRecord[currentSimPoint] * upgradeVelocity * velocityModifier;
         currentSimPoint++;
 
         // Check if Simulation is done
@@ -358,6 +359,7 @@ public class GameManager : MonoBehaviour {
         upgradeVelocity = 1;
         playerSolid = false;
         ghostSolid = false;
+        velocityModifier = 1;
 
         //Untoggle the toggles
         toggle = pauseMenu.transform.Find("SpeedUp").gameObject.GetComponent<Toggle>();
@@ -432,8 +434,16 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    public void SpawnToGhost() {
+
+    }
+
     public void LevelFinished ()
     {
         Reset();
+    }
+
+    public void ModifyVelocityModifier(float modifier) {
+        velocityModifier = modifier;
     }
 }
