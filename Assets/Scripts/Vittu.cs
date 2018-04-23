@@ -8,13 +8,17 @@ public class Vittu : MonoBehaviour
     public Vector3 target;
     [SerializeField]
     public GameObject gm;
-
+    [SerializeField]
+    private float yOffset, zOffset;
     private Vector3 offset;
     private bool toggleTargets;
 
     private void Start()
     {
-        offset = transform.position - gm.GetComponent<GameManager>().ghost_rb.transform.position;
+        yOffset = 8.07f;
+        zOffset = -7.18f;
+        //offset = transform.position - gm.GetComponent<GameManager>().ghost_rb.transform.position;
+        offset = new Vector3(0, yOffset, zOffset);
     }
 
     // Update is called once per frame

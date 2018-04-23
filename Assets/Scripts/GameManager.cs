@@ -59,6 +59,8 @@ public class GameManager : MonoBehaviour {
         lastActionTime = 5.0f;
         this.turnTimer = turnTime;
         this.startingRotation = this.player_rb.rotation;
+        this.startingPoint = this.player_rb.transform.position;
+        this.ghost_rb.transform.position = player_rb.transform.position;
         this.canJump = true;
         this.velocityRecord = new Vector3[1000];
         this.recordIterator = 0;
@@ -292,6 +294,7 @@ public class GameManager : MonoBehaviour {
         ghost_rb.GetComponent<Collider>().enabled = true;
 
         ResetUpgrades();
+        
 
         // Reset recording
         velocityRecord = new Vector3[1000];
@@ -306,6 +309,7 @@ public class GameManager : MonoBehaviour {
         //toggle = upgrades.ActiveToggles().FirstOrDefault();
         //toggle.isOn = false;
         //upgrades.SetAllTogglesOff();
+        turnTime = 5.0f;
         toggle = pauseMenu.transform.Find("SpeedUp").gameObject.GetComponent<Toggle>();
         toggle.isOn = false;
         toggle = pauseMenu.transform.Find("MoreTime").gameObject.GetComponent<Toggle>();
