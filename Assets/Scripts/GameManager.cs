@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour {
     private int currentSimPoint;
     private Vector3[] velocityRecord;
     private float upgradeVelocity, velocityModifier;
-    private bool playerSolid, ghostSolid;
+    private bool playerSolid, ghostSolid, spawnToGhost;
 
     void Start()
     {
@@ -72,6 +72,7 @@ public class GameManager : MonoBehaviour {
         this.player_rb.GetComponent<Collider>().enabled = false;
         this.playerSolid = false;
         this.ghostSolid = false;
+        this.spawnToGhost = false;
         velocityModifier = 1;
         //toggle = pauseMenu.transform.Find("SpeedUp").gameObject.GetComponent<Toggle>();
         //toggle.isOn = false;
@@ -231,6 +232,7 @@ public class GameManager : MonoBehaviour {
 
     private void ActionTurnStart()
     {
+
         //disable used upgrade
         //toggle = upgrades.ActiveToggles().FirstOrDefault();
         if(toggle.isOn)
@@ -240,7 +242,12 @@ public class GameManager : MonoBehaviour {
         // Set ghost to player position and unlock movement. 
         turnText.text = "Action Turn";
         ghost_rb.velocity = momentum;
-        ghost_rb.position = player_rb.position;
+
+        if(!spawnToGhost)
+            ghost_rb.position = player_rb.position;
+
+
+
         ghost_rb.isKinematic = false;
         ghost_rb.GetComponent<Collider>().enabled = true;
 
@@ -294,6 +301,8 @@ public class GameManager : MonoBehaviour {
         toggle.interactable = true;
         toggle = pauseMenu.transform.Find("SolidPlayer").gameObject.GetComponent<Toggle>();
         toggle.interactable = true;
+        toggle = pauseMenu.transform.Find("SpawnToGhost").gameObject.GetComponent<Toggle>();
+        toggle.interactable = true;
 
         // Reset recording
         velocityRecord = new Vector3[1000];
@@ -309,6 +318,7 @@ public class GameManager : MonoBehaviour {
         // Reset Game
         currentGameState = GameState.action;
         this.turnText.text = "Action Turn";
+        turnTime = 5.0f;
         turnTimer = turnTime;
 
         // Reset movement
@@ -326,7 +336,7 @@ public class GameManager : MonoBehaviour {
         ghost_rb.GetComponent<Collider>().enabled = true;
 
         ResetUpgrades();
-        turnTime = 5.0f;
+        
         //activate upgrades
         toggle = pauseMenu.transform.Find("SpeedUp").gameObject.GetComponent<Toggle>();
         toggle.interactable = true;
@@ -337,6 +347,8 @@ public class GameManager : MonoBehaviour {
         toggle = pauseMenu.transform.Find("SimulationVelocity").gameObject.GetComponent<Toggle>();
         toggle.interactable = true;
         toggle = pauseMenu.transform.Find("SolidPlayer").gameObject.GetComponent<Toggle>();
+        toggle.interactable = true;
+        toggle = pauseMenu.transform.Find("SpawnToGhost").gameObject.GetComponent<Toggle>();
         toggle.interactable = true;
 
         // Reset recording
@@ -359,6 +371,7 @@ public class GameManager : MonoBehaviour {
         upgradeVelocity = 1;
         playerSolid = false;
         ghostSolid = false;
+        spawnToGhost = false;
         velocityModifier = 1;
 
         //Untoggle the toggles
@@ -372,6 +385,10 @@ public class GameManager : MonoBehaviour {
         toggle.isOn = false;
         toggle = pauseMenu.transform.Find("SolidPlayer").gameObject.GetComponent<Toggle>();
         toggle.isOn = false;
+        toggle = pauseMenu.transform.Find("SpawnToGhost").gameObject.GetComponent<Toggle>();
+        toggle.isOn = false;
+
+        
     }
 
     public void SpeedUpgrade() {
@@ -394,7 +411,7 @@ public class GameManager : MonoBehaviour {
             turnTime = 10;            
         } else
         {
-            turnTime = 5;;
+            turnTime = 5;
         }
     }
 
@@ -435,7 +452,13 @@ public class GameManager : MonoBehaviour {
     }
 
     public void SpawnToGhost() {
+        toggle = pauseMenu.transform.Find("SpawnToGhost").gameObject.GetComponent<Toggle>();
 
+        if(toggle.isOn) {
+            spawnToGhost = true;
+        } else {
+            spawnToGhost = false;
+        }
     }
 
     public void LevelFinished ()
