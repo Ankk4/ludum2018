@@ -24,11 +24,15 @@ public class Player : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Respawn")
+        switch (other.tag)
         {
-            gameManager.GetComponent<GameManager>().Reset();
+            case "Respawn":
+                gameManager.GetComponent<GameManager>().Reset();
+                break;
+            case "Goal":
+                gameManager.GetComponent<GameManager>().LevelFinished();
+                break;
         }
     }
-
 }
 
