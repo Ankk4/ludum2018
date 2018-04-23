@@ -25,7 +25,6 @@ public class GameManager : MonoBehaviour {
     [SerializeField]
     private GameObject pauseMenu;
     private Toggle toggle;
-    public ToggleGroup upgrades;
 
     private float lastActionTime;
 
@@ -52,6 +51,7 @@ public class GameManager : MonoBehaviour {
     private int recordIterator;
     private int currentSimPoint;
     private Vector3[] velocityRecord;
+    private float upgradeVelocity;
 
     void Start()
     {
@@ -71,6 +71,8 @@ public class GameManager : MonoBehaviour {
         player_rb.GetComponent<Collider>().enabled = false;
         //toggle = pauseMenu.transform.Find("SpeedUp").gameObject.GetComponent<Toggle>();
         //toggle.isOn = false;
+        //upgradeVelocity = 1;
+
     }
 
     void Update()
@@ -133,7 +135,7 @@ public class GameManager : MonoBehaviour {
         turnTimer -= Time.deltaTime;
         turnTimeText.text = turnTimer.ToString("F2");
 
-        player_rb.velocity = velocityRecord[currentSimPoint];
+        player_rb.velocity = velocityRecord[currentSimPoint] * upgradeVelocity;
         currentSimPoint++;
 
         // Check if Simulation is done
@@ -310,54 +312,53 @@ public class GameManager : MonoBehaviour {
         //toggle.isOn = false;
         //upgrades.SetAllTogglesOff();
         turnTime = 5.0f;
+        upgradeVelocity = 1;
         toggle = pauseMenu.transform.Find("SpeedUp").gameObject.GetComponent<Toggle>();
         toggle.isOn = false;
         toggle = pauseMenu.transform.Find("MoreTime").gameObject.GetComponent<Toggle>();
         toggle.isOn = false;
+        toggle = pauseMenu.transform.Find("KillMomentum").gameObject.GetComponent<Toggle>();
+        toggle.isOn = false;
+        toggle = pauseMenu.transform.Find("SimulationVelocity").gameObject.GetComponent<Toggle>();
+        toggle.isOn = false;
     }
 
     public void SpeedUpgrade() {
-        //toggle = pauseMenu.transform.Find("SpeedUp").gameObject.GetComponent<Toggle>();
-        toggle = upgrades.ActiveToggles().FirstOrDefault();
-        
-        if(toggle != null) {
-            Debug.Log(toggle.name);
-            //bool isOn = toggle.isOn;
-            if(toggle.name == "SpeedUp") {
-                speed = 10;
-            }
+        toggle = pauseMenu.transform.Find("SpeedUp").gameObject.GetComponent<Toggle>();   
+        if(toggle.isOn) {
+            Debug.Log(toggle.name);            
+            speed = 10;
         } else {
             speed = 6;
         }
     }
 
     public void MoreTime() {
-        //toggle = pauseMenu.transform.Find("SpeedUp").gameObject.GetComponent<Toggle>();
-        toggle = upgrades.ActiveToggles().FirstOrDefault();
-
-        if(toggle != null) {
+        toggle = pauseMenu.transform.Find("MoreTime").gameObject.GetComponent<Toggle>();
+        if(toggle.isOn) {
             Debug.Log(toggle.name);
-            //bool isOn = toggle.isOn;
-            if(toggle.name == "MoreTime") {
-                    turnTime = 10;            
-            }
+            turnTime = 10;            
         } else {
             turnTime = 5;;
         }
     }
 
     public void KillMomentum() {
-        toggle = upgrades.ActiveToggles().FirstOrDefault();
-
-        if(toggle != null) {
+        toggle = pauseMenu.transform.Find("KillMomentum").gameObject.GetComponent<Toggle>();
+        if(toggle.isOn) {
             Debug.Log(toggle.name);
-            //bool isOn = toggle.isOn;
-            if(toggle.name == "KillMomentum") {
-                Debug.Log(momentum);
-                Debug.Log("wattafaj");
-                momentum = new Vector3(0,0,0);
-            }
+            momentum = new Vector3(0,0,0);
         }
+    }
+
+    public void SimulationVelocity() {
+        toggle = pauseMenu.transform.Find("SimulationVelocity").gameObject.GetComponent<Toggle>();
+        if(toggle.isOn) {
+            upgradeVelocity = 1.5f;                           
+        } else {
+            upgradeVelocity = 1; 
+        }
+
     }
 
 }
