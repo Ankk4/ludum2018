@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour {
     [SerializeField]
     private GameObject pauseMenu;
     private Toggle toggle;
+    public ToggleGroup upgrades;
 
     private float lastActionTime;
 
@@ -222,6 +223,11 @@ public class GameManager : MonoBehaviour {
 
     private void ActionTurnStart()
     {
+        //disable used upgrade
+        //toggle = upgrades.ActiveToggles().FirstOrDefault();
+        if(toggle.isOn)
+            toggle.interactable = false;
+
         lastActionTime = turnTime;
         // Set ghost to player position and unlock movement. 
         turnText.text = "Action Turn";
@@ -239,6 +245,7 @@ public class GameManager : MonoBehaviour {
 
     private void HandlePauseTurn() {       
         pauseMenu.SetActive(true);
+        
     }
 
     private void DebugReset()
@@ -296,7 +303,16 @@ public class GameManager : MonoBehaviour {
         ghost_rb.GetComponent<Collider>().enabled = true;
 
         ResetUpgrades();
-        
+
+        //activate upgrades
+        toggle = pauseMenu.transform.Find("SpeedUp").gameObject.GetComponent<Toggle>();
+        toggle.interactable = true;
+        toggle = pauseMenu.transform.Find("MoreTime").gameObject.GetComponent<Toggle>();
+        toggle.interactable = true;
+        toggle = pauseMenu.transform.Find("KillMomentum").gameObject.GetComponent<Toggle>();
+        toggle.interactable = true;
+        toggle = pauseMenu.transform.Find("SimulationVelocity").gameObject.GetComponent<Toggle>();
+        toggle.interactable = true;
 
         // Reset recording
         velocityRecord = new Vector3[1000];
