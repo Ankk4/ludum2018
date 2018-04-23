@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour {
 
@@ -24,7 +25,10 @@ public class MainMenu : MonoBehaviour {
 
 	void loadLevel(){
 		Debug.Log(rotatedAmount + 1);
-	}
+        string levelName = "level" + (rotatedAmount + 1);
+        SceneManager.LoadScene(levelName);
+
+    }
 	
 	void leftMove(){
 		rotatedAmount--;
