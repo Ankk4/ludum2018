@@ -4,17 +4,25 @@ using UnityEngine;
 
 public class Follow : MonoBehaviour {
 
-    public GameObject parent;
+    public Camera parent;
     private Vector3 offset;
 
 	// Use this for initialization
 	void Start () {
-		transform.position = parent.transform.position;
+        parent = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+
+        transform.position = parent.transform.position;
         offset = new Vector3(0, 0.32f);
 	}
+
+    void Awake() {
+        parent = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        transform.position = parent.transform.position;
+        offset = new Vector3(0,0.32f);
+    }
 	
 	// Update is called once per frame
 	void Update () {
-        transform.position = parent.transform.position + offset;
+       // transform.position = parent.transform.position + offset;
     }
 }
