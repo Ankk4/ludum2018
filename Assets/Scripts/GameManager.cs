@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Linq;
 
 public class GameManager : MonoBehaviour {
@@ -77,6 +78,7 @@ public class GameManager : MonoBehaviour {
         //toggle = pauseMenu.transform.Find("SpeedUp").gameObject.GetComponent<Toggle>();
         //toggle.isOn = false;
         //upgradeVelocity = 1;
+        //GameObject.FindGameObjectWithTag("music").GetComponent<Music>().PlayMusic();
     }
 
     void Update()
@@ -463,7 +465,8 @@ public class GameManager : MonoBehaviour {
 
     public void LevelFinished ()
     {
-        Reset();
+        SceneManager.LoadScene("level2");
+        //Reset();
     }
 
     public void ModifyVelocityModifier(float modifier) {

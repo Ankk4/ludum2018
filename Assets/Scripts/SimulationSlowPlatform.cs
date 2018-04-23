@@ -16,6 +16,7 @@ public class SimulationSlowPlatform : MonoBehaviour {
 		
 	}
 
+    
     void OnCollisionStay(Collision other) {
         //Debug.Log("wadap");
         if(other.collider.tag == "Player") {
@@ -25,6 +26,14 @@ public class SimulationSlowPlatform : MonoBehaviour {
             gm.GetComponent<GameManager>().ModifyVelocityModifier(1);
         }
     }
-
-
+    /*
+    void OnTriggerStay(Collider other) {
+        //Debug.Log("wadap");
+        if(other.tag == "Player") {
+            gm.GetComponent<GameManager>().ModifyVelocityModifier(0.5f);
+            Debug.Log("ass");
+        } else {
+            gm.GetComponent<GameManager>().ModifyVelocityModifier(1);
+        }
+    }*/
 }

@@ -8,11 +8,20 @@ public class Music : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		music.Play();
+        DontDestroyOnLoad(transform.gameObject);		
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
 	}
+
+    public void PlayMusic() {
+        if(music.isPlaying) return;
+        music.Play();
+    }
+
+    public void StopMusic() {
+        music.Stop();
+    }
 }

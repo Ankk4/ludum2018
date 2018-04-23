@@ -8,6 +8,7 @@ TagManager:
   - MovingPlatform
   - ghost
   - Goal
+  - music
   layers:
   - Default
   - TransparentFX
