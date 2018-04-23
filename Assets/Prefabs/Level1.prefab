@@ -826,9 +826,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   position: 0
+  axel: 0
   positionCounter: 0.1
   positionIncrement: 0.01
-  speed: 1
   gm: {fileID: 0}
 --- !u!114 &114577136977590200
 MonoBehaviour:

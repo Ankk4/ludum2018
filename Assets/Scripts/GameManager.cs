@@ -150,7 +150,7 @@ public class GameManager : MonoBehaviour {
             player_rb.isKinematic = true;
             currentGameState = GameState.readyForAction;
 
-            turnText.text = "Press z to start action turn";
+            turnText.text = "Press Z to start action turn";
             turnTimeText.text = "00.00";
             turnTimer = turnTime;
         }
@@ -194,7 +194,7 @@ public class GameManager : MonoBehaviour {
             ghost_rb.GetComponent<Collider>().enabled = true;
 
             currentGameState = GameState.pause;
-            turnText.text = "Pause Turn";
+            turnText.text = "Pause Turn - Z to continue";
             turnTimeText.text = "00:00";
 
             ResetUpgrades();
