@@ -20,6 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4461787740133598}
   - component: {fileID: 114978459224118312}
+  - component: {fileID: 114356265320820754}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -40,6 +41,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114356265320820754
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1501649256891540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e1e9d9a90f98ef49959aca454a69c8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114978459224118312
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -55,8 +67,9 @@ MonoBehaviour:
   turnText: {fileID: 0}
   player_rb: {fileID: 0}
   ghost_rb: {fileID: 0}
-  playerCam: {fileID: 0}
-  speed: 7
+  speed: 6
   jumpForce: 6
-  turnTime: 10
+  turnTime: 5
   startingPoint: {x: 0, y: 2.7, z: -11}
+  pauseMenu: {fileID: 0}
+  upgrades: {fileID: 0}

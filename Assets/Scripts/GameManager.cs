@@ -24,8 +24,10 @@ public class GameManager : MonoBehaviour {
     [SerializeField]
     private Vector3 startingPoint;
     [SerializeField]
+
     private GameObject pauseMenu;
     private Toggle toggle;
+
     public ToggleGroup upgrades;
 
     private float lastActionTime;
@@ -39,8 +41,9 @@ public class GameManager : MonoBehaviour {
         simulation,
         readyForAction
     }
-    private GameState currentGameState;
-    public GameState CurrentGameState
+
+    private static GameState currentGameState;
+    public static GameState CurrentGameState
     {
         get { return currentGameState; }
     }
@@ -52,6 +55,7 @@ public class GameManager : MonoBehaviour {
     private int recordIterator;
     private int currentSimPoint;
     private Vector3[] velocityRecord;
+
     private float upgradeVelocity, velocityModifier;
     private bool playerSolid, ghostSolid, spawnToGhost;
 
@@ -67,7 +71,7 @@ public class GameManager : MonoBehaviour {
         this.velocityRecord = new Vector3[1000];
         this.recordIterator = 0;
         this.currentSimPoint = 0;
-        this.currentGameState = GameState.action;
+        GameManager.currentGameState = GameState.action;
         this.turnText.text = "Action Turn";
         this.player_rb.isKinematic = true;
         this.player_rb.GetComponent<Collider>().enabled = false;
@@ -79,6 +83,7 @@ public class GameManager : MonoBehaviour {
         //toggle.isOn = false;
         //upgradeVelocity = 1;
         //GameObject.FindGameObjectWithTag("music").GetComponent<Music>().PlayMusic();
+        Camera.main.GetComponent<PlayerCamera>().SetGhostTarget(); 
     }
 
     void Update()
@@ -97,6 +102,7 @@ public class GameManager : MonoBehaviour {
                     ghost_rb.isKinematic = true;
                     ghost_rb.GetComponent<Collider>().enabled = false;
                     turnTimer = lastActionTime;
+                    Camera.main.GetComponent<PlayerCamera>().SetPlayerTarget();
                     break;
 
                 case GameState.readyForAction:
@@ -108,7 +114,8 @@ public class GameManager : MonoBehaviour {
 
         if (Input.GetButton("Reset"))
         {
-            DebugReset();
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            //DebugReset();
         }
     }
 
@@ -137,9 +144,12 @@ public class GameManager : MonoBehaviour {
     private void HandleSimulationTurn()
     {
         pauseMenu.SetActive(false);
+
         // Update turn timer
         turnTimer -= Time.deltaTime;
         turnTimeText.text = turnTimer.ToString("F2");
+
+        //GetComponent<InputRecorder>().GetRecordByIndex(currentIndex);
 
         player_rb.velocity = velocityRecord[currentSimPoint] * upgradeVelocity * velocityModifier;
         currentSimPoint++;
@@ -158,8 +168,11 @@ public class GameManager : MonoBehaviour {
 
     private void HandleActionTurn()
     {
-        if(playerSolid) {
-            if((ghost_rb.transform.position.x - player_rb.transform.position.x > 1) || (ghost_rb.transform.position.y - player_rb.transform.position.y > 1) || (ghost_rb.transform.position.z - player_rb.transform.position.z > 1)) {
+        if(playerSolid)
+        {
+            if((ghost_rb.transform.position.x - player_rb.transform.position.x > 1) || (ghost_rb.transform.position.y - player_rb.transform.position.y > 1)
+                || (ghost_rb.transform.position.z - player_rb.transform.position.z > 1))
+            {
                 player_rb.GetComponent<Collider>().enabled = true;
             }
         }
@@ -224,7 +237,7 @@ public class GameManager : MonoBehaviour {
             float moveHorizontal = Input.GetAxis("Horizontal");
             float moveVertical = Input.GetAxis("Vertical");
             Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-            ghost_rb.velocity = new Vector3(movement.x * speed, player_rb.velocity.y, movement.z * speed);
+            ghost_rb.velocity = new Vector3(movement.x * speed, ghost_rb.velocity.y, movement.z * speed);
         }
         else
         {
@@ -234,10 +247,11 @@ public class GameManager : MonoBehaviour {
 
     private void ActionTurnStart()
     {
+        Camera.main.GetComponent<PlayerCamera>().SetGhostTarget();
 
         //disable used upgrade
         //toggle = upgrades.ActiveToggles().FirstOrDefault();
-        if(toggle.isOn)
+        if (toggle.isOn)
             toggle.interactable = false;
 
         lastActionTime = turnTime;
@@ -247,8 +261,6 @@ public class GameManager : MonoBehaviour {
 
         if(!spawnToGhost)
             ghost_rb.position = player_rb.position;
-
-
 
         ghost_rb.isKinematic = false;
         ghost_rb.GetComponent<Collider>().enabled = true;
@@ -263,9 +275,9 @@ public class GameManager : MonoBehaviour {
         currentSimPoint = 0;
     }
 
-    private void HandlePauseTurn() {       
-        pauseMenu.SetActive(true);
-        
+    private void HandlePauseTurn()
+    {       
+        pauseMenu.SetActive(true);        
     }
 
     private void DebugReset()
@@ -453,12 +465,16 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    public void SpawnToGhost() {
+    public void SpawnToGhost()
+    {
         toggle = pauseMenu.transform.Find("SpawnToGhost").gameObject.GetComponent<Toggle>();
 
-        if(toggle.isOn) {
+        if(toggle.isOn)
+        {
             spawnToGhost = true;
-        } else {
+        }
+        else
+        {
             spawnToGhost = false;
         }
     }
