@@ -2,37 +2,60 @@
 
 public class Player : MonoBehaviour
 {
+    private float rayDistance;
+    private bool canJump;
+
     [SerializeField]
-    private GameObject gameManager;
+    private float speed;
 
-    void OnCollisionEnter(Collision collision)
+    private float moveHorizontal;
+    private float moveVertical;
+
+    private InputData inputData;
+    private InputRecorder inputRecorder;
+
+
+    public void Movement()
     {
-        if(collision.collider.gameObject.tag == "MovingPlatform")
+        // Get current velocity for rigidbody
+        Vector3 currentVel = GetComponent<Rigidbody>().velocity;
+        Vector3 newVel;
+
+
+        canJump = CanPlayerJump();
+        inputRecorder.ResolveInput(canJump);
+
+        if (canJump)
         {
-            Debug.Log("nigga");
-            transform.parent = collision.collider.transform;
+            ResolveInput();
+            Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+            newVel = new Vector3(movement.x * speed, currentVel.y, movement.z * speed);
         }
+        else
+        {
+            newVel =  new Vector3(currentVel.x, currentVel.y, currentVel.z);
+        }
+
+        ResolveMovement(newVel);
     }
 
-    void OnCollisionExit(Collision collision)
+    private void ResolveMovement(Vector3 vel)
     {
-        if(collision.collider.gameObject.tag == "MovingPlatform")
-        {
-            transform.parent = null;
-        }
+        GetComponent<Rigidbody>().velocity = vel;
     }
 
-    void OnTriggerEnter(Collider other)
+    private bool CanPlayerJump()
     {
-        switch (other.tag)
-        {
-            case "Respawn":
-                gameManager.GetComponent<GameManager>().Reset();
-                break;
-            case "Goal":
-                gameManager.GetComponent<GameManager>().LevelFinished();
-                break;
-        }
+        // Can jump?
+        rayDistance = GetComponent<Collider>().bounds.extents.y + 0.1f;
+        Ray ray = new Ray();
+        ray.origin = GetComponent<Collider>().bounds.center;
+        ray.direction = Vector3.down;
+
+        if (Physics.Raycast(ray, rayDistance))
+            return true;
+
+        return false;
     }
 }
 
